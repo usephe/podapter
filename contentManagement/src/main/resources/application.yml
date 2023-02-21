@@ -1,0 +1,26 @@
+server:
+  port: 8088
+
+security:
+  jwt:
+    secret: "7638792F423F4528472B4B6250655368566D597133743677397A24432646294A"
+
+spring:
+  application:
+    name: content-management
+  datasource:
+    url: jdbc:postgresql://localhost:5432/audiophile
+    username: admin
+    password: admin
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB

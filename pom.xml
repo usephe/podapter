@@ -13,7 +13,7 @@
   <url>https://www.audiophileproject.com</url>
 
   <modules>
-    <module>audioManagement</module>
+    <module>contentManagement</module>
       <module>userManagement</module>
   </modules>
 
