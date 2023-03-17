@@ -48,15 +48,15 @@ public class AuthenticationService {
      * @return
      * @apiNote we authenticate by email and not username
      */
-    public AuthenticationResponse authenticate(AuthenticatoinRequest request){
+    public AuthenticationResponse authenticate(AuthenticationRequest request){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
+                        request.getUsername(),
                         request.getPassword()
                 )
         );
         
-        var user = userRepository.findByEmail(request.getEmail())
+        var user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()

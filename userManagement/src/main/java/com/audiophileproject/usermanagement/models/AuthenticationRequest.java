@@ -10,7 +10,7 @@ import org.springframework.core.annotation.AliasFor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticatoinRequest {
-    private String email;
+public class AuthenticationRequest {
+    private String username;
     String password;
 }

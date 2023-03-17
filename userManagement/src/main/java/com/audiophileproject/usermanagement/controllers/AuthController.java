@@ -1,8 +1,8 @@
 package com.audiophileproject.usermanagement.controllers;
 
 
+import com.audiophileproject.usermanagement.models.AuthenticationRequest;
 import com.audiophileproject.usermanagement.models.AuthenticationResponse;
-import com.audiophileproject.usermanagement.models.AuthenticatoinRequest;
 import com.audiophileproject.usermanagement.models.RegisterRequest;
 import com.audiophileproject.usermanagement.services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,7 +32,7 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticatoinRequest request
+            @RequestBody AuthenticationRequest request
     ){
         return ResponseEntity.ok(authService.authenticate(request));
     }
