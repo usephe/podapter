@@ -8,6 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ContentResponse {
+	private long id;
 	private String title;
 	private String description;
 	private String fileUrl;
