@@ -4,6 +4,7 @@ import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.services.ContentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class ContentController {
 	private final ContentService contentService;
 
 	@PostMapping
+	@ResponseStatus(HttpStatus.CREATED)
 	public ContentResponse createContent(@Valid @RequestBody ContentRequest request) {
 		var content = Content.builder()
 				.title(request.getTitle())
