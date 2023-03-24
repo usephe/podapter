@@ -3,6 +3,7 @@ package com.audiophileproject.usermanagement.config;
 import com.audiophileproject.usermanagement.repos.UserRepository;
 import com.audiophileproject.usermanagement.services.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @RequiredArgsConstructor
+@EnableDiscoveryClient
 public class ApplicationConfig {
     private  final UserRepository userRepository;
     private final UserService userDetailsService;
