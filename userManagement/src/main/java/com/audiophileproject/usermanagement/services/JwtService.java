@@ -1,10 +1,14 @@
 package com.audiophileproject.usermanagement.services;
 
+import com.audiophileproject.usermanagement.models.RefreshToken;
+import com.audiophileproject.usermanagement.models.User;
+import com.audiophileproject.usermanagement.repos.RefreshTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +16,21 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
 
-    private static final String SECRET_KEY = "4125442A472D4A614E645267556B58703273357638792F423F4528482B4D6250";
+//    private static final String SECRET_KEY = "4125442A472D4A614E645267556B58703273357638792F423F4528482B4D6250";
+
+
+    RefreshTokenRepository refreshTokenRepository;
+
+    @Autowired
+    JwtService(RefreshTokenRepository refreshTokenRepository){
+        this.refreshTokenRepository = refreshTokenRepository;
+    }
 
     public String generateToken(UserDetails userDetails){
         return generateToken(new HashMap<>(), userDetails);
@@ -53,14 +66,32 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateRefreshToken(UserDetails userDetails){
-        return Jwts
-                .builder()
-                .setSubject(userDetails.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24)) // 24 hours
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-                .compact();
+//    public String generateRefreshToken(UserDetails userDetails){
+//        return Jwts
+//                .builder()
+//                .setSubject(userDetails.getUsername())
+//                .setIssuedAt(new Date(System.currentTimeMillis()))
+//                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24)) // 24 hours
+//                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+//                .compact();
+//    }
+
+
+    /**
+     * create a refresh token for a specific user and store it in database
+     * @param user
+     * @return the refresh token instance of RefreshToken
+     */
+    public RefreshToken createRefreshToken(User user){
+        RefreshToken refreshToken = new RefreshToken();
+        refreshToken.setUser(user);
+        refreshToken.setExpiryDate(Instant.now().plusSeconds(60*60*24*30)); // expire after a month
+
+        String token = UUID.randomUUID().toString();
+        refreshToken.setToken(token);
+        refreshToken.setExpired(false);
+        refreshTokenRepository.save(refreshToken);
+        return  refreshToken;
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
