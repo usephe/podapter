@@ -1,6 +1,7 @@
 package com.audiophileproject.usermanagement.services;
 
 import com.audiophileproject.usermanagement.models.*;
+import com.audiophileproject.usermanagement.repos.RefreshTokenRepository;
 import com.audiophileproject.usermanagement.repos.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +14,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -38,7 +42,7 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .authToken(jwtToken)
-                .refreshToken(jwtService.generateRefreshToken(user))
+                .refreshToken(jwtService.createRefreshToken(user).getToken())
                 .build();
     }
 
@@ -61,7 +65,7 @@ public class AuthenticationService {
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse.builder()
                 .authToken(jwtToken)
-                .refreshToken(jwtService.generateRefreshToken(user))
+                .refreshToken(jwtService.createRefreshToken(user).getToken())
                 .build();
     }
 
@@ -73,15 +77,12 @@ public class AuthenticationService {
      *
      */
     // TODO complete this method
-    public AuthenticationResponse refresh(HttpServletRequest request) {
-
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String username;
-
-        if(authHeader == null || !authHeader.startsWith("Bearer ")){
-//            filterChain.doFilter(request,response);
-//            return;
+    public AuthenticationResponse handleRefresh(String token) throws Exception {
+        RefreshToken  refreshToken = refreshTokenRepository.findByToken(token).orElseThrow(()->{
+            return  new Exception("Token Not Valid");
+        });
+        if(refreshToken.isExpired() || refreshToken.getExpiryDate().isBefore(Instant.now())) {
+            throw  new Exception("Token Expired");
         }
 
         jwt = authHeader.substring(7);
