@@ -2,6 +2,7 @@ package com.audiophileproject.main.config;
 
 import com.audiophileproject.main.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @RequiredArgsConstructor
 @Configuration
+@EnableDiscoveryClient
 public class AppConfig {
 	private final UserRepository userRepository;
 
