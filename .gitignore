@@ -1,3 +1,5 @@
 .idea
 userManagement/target
 /.vscode/settings.json
+/private.key
+/public.key
