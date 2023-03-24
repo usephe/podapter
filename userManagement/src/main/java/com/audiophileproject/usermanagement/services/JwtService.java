@@ -12,7 +12,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.security.Key;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.security.*;
+import java.security.spec.EncodedKeySpec;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -56,13 +65,18 @@ public class JwtService {
             Map<String, Object> extraClaims,
             UserDetails userDetails
     ){
+
+        // saves the private and public keys to the disk
+        // you can comment it after generating the keys files
+        saveKeyPair();
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*10)) // 10 minutes
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60)) // 1 minute
+                .signWith(getSignInKey(), SignatureAlgorithm.RS256)
                 .compact();
     }
 
@@ -102,17 +116,63 @@ public class JwtService {
     private Claims extractClaims(String token){
         return Jwts
                 .parserBuilder()
-                .setSigningKey(getSignInKey())
+                .setSigningKey(getPublicKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
+    /**
+     * the signing key will be the private key of the RSA keypair encryption
+     * @return the PrivateKey instance
+     */
+    private PrivateKey getSignInKey() {
+        try{
+            File privateKeyFile = new File("private.key");
+            byte[] privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            return keyFactory.generatePrivate(privateKeySpec);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
+    private PublicKey getPublicKey() {
+        try{
+            File publicKeyFile = new File("public.key");
+            byte[] publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
+            KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+            EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
+            return keyFactory.generatePublic(publicKeySpec);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+    private void saveKeyPair(){
+        try{
+            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+            KeyPair keyPair= generator.generateKeyPair();
+            PrivateKey privateKey = keyPair.getPrivate();
+            PublicKey publicKey = keyPair.getPublic();
+
+            try(FileOutputStream fos = new FileOutputStream("public.key")){
+                fos.write(publicKey.getEncoded());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            try(FileOutputStream fos = new FileOutputStream("private.key")){
+                fos.write(privateKey.getEncoded());
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }catch (NoSuchAlgorithmException e){
+            e.printStackTrace();
+        }
+
+    }
 
 
 }
