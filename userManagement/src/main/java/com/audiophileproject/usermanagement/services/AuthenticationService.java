@@ -3,15 +3,12 @@ package com.audiophileproject.usermanagement.services;
 import com.audiophileproject.usermanagement.models.*;
 import com.audiophileproject.usermanagement.repos.RefreshTokenRepository;
 import com.audiophileproject.usermanagement.repos.UserRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -84,23 +81,13 @@ public class AuthenticationService {
         if(refreshToken.isExpired() || refreshToken.getExpiryDate().isBefore(Instant.now())) {
             throw  new Exception("Token Expired");
         }
-
-        jwt = authHeader.substring(7);
-        username = jwtService.extractUsername(jwt);
-        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-            if(jwtService.isTokenValid(jwt,userDetails)){
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities()
-                );
-                authToken.setDetails(
-                        new WebAuthenticationDetailsSource().buildDetails(request)
-                );
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
+        else{
+            String jwtToken = jwtService.generateToken(refreshToken.getUser());
+            return AuthenticationResponse.builder()
+                    .authToken(jwtToken)
+                    .refreshToken(refreshToken.getToken())
+                    .build();
         }
-        return null;
     }
+
 }
