@@ -5,5 +5,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableDiscoveryClient
-public class Appconfig {
+public class AppConfig {
 }
