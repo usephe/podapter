@@ -10,12 +10,14 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.xml.datatype.DatatypeConstants;
 import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -50,12 +52,13 @@ public class AuthController {
     }
 
     // TODO complete this endpoint
-    @PostMapping("/refresh")
+    @PostMapping(value = "/refresh")
     public void authenticate(
             @RequestBody String refreshToken, HttpServletResponse response
     ) {
 
         try {
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             new ObjectMapper().writeValue(response.getOutputStream(),authService.handleRefresh(refreshToken));
         } catch (Exception e) {
             response.setHeader("error", e.getMessage());

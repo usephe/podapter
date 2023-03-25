@@ -80,16 +80,6 @@ public class JwtService {
                 .compact();
     }
 
-//    public String generateRefreshToken(UserDetails userDetails){
-//        return Jwts
-//                .builder()
-//                .setSubject(userDetails.getUsername())
-//                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*60*24)) // 24 hours
-//                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-//                .compact();
-//    }
-
 
     /**
      * create a refresh token for a specific user and store it in database
