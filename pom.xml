@@ -17,6 +17,7 @@
       <module>userManagement</module>
     <module>discovery-server</module>
     <module>api-gateway</module>
+    <module>audioScraping</module>
   </modules>
 
   <properties>
@@ -55,6 +56,13 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
+    </dependency>
+
+    <!-- hot reload -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-devtools</artifactId>
+      <optional>true</optional>
     </dependency>
   </dependencies>
 
