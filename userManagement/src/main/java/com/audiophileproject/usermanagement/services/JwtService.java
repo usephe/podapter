@@ -118,7 +118,7 @@ public class JwtService {
      */
     private PrivateKey getSignInKey() {
         try{
-            File privateKeyFile = new File("private.key");
+            File privateKeyFile = new File("userManagement/private.key");
             byte[] privateKeyBytes = Files.readAllBytes(privateKeyFile.toPath());
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             EncodedKeySpec privateKeySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
@@ -131,7 +131,7 @@ public class JwtService {
 
     private PublicKey getPublicKey() {
         try{
-            File publicKeyFile = new File("public.key");
+            File publicKeyFile = new File("userManagement/public.key");
             byte[] publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
@@ -148,12 +148,12 @@ public class JwtService {
             PrivateKey privateKey = keyPair.getPrivate();
             PublicKey publicKey = keyPair.getPublic();
 
-            try(FileOutputStream fos = new FileOutputStream("public.key")){
+            try(FileOutputStream fos = new FileOutputStream("userManagement/public.key")){
                 fos.write(publicKey.getEncoded());
             }catch (Exception e){
                 e.printStackTrace();
             }
-            try(FileOutputStream fos = new FileOutputStream("private.key")){
+            try(FileOutputStream fos = new FileOutputStream("userManagement/private.key")){
                 fos.write(privateKey.getEncoded());
             }catch (Exception e){
                 e.printStackTrace();
