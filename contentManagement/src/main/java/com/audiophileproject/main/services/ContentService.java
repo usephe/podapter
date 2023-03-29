@@ -1,10 +1,8 @@
 package com.audiophileproject.main.services;
 
 import com.audiophileproject.main.models.Content;
-import com.audiophileproject.main.models.User;
 import com.audiophileproject.main.repositories.ContentRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,9 +12,8 @@ import java.util.List;
 public class ContentService {
 	private final ContentRepository contentRepository;
 
-    public Content createContent(Content content) {
-        User user = getCurrentUser();
-        content.setUser(user);
+    public Content createContent(Content content, String userId) {
+        content.setUserId(userId);
         return contentRepository.save(content);
     }
 
@@ -34,10 +31,5 @@ public class ContentService {
             return;
 
         contentRepository.deleteById(id);
-    }
-
-    private User getCurrentUser() {
-        var auth = SecurityContextHolder.getContext().getAuthentication();
-        return (User)auth.getPrincipal();
     }
 }

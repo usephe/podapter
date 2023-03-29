@@ -26,8 +26,6 @@ public class Content {
 	private String title;
 	private String description;
 	private String fileUrl;
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-//	@Column(nullable = false)
-	private User user;
+	@Column(nullable = false)
+	private String userId;
 }
