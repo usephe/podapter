@@ -30,7 +30,8 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
                 }
 
                 String token = extractJwtToken(exchange);
-                jwtService.isTokenValid(token);
+                if (!jwtService.isTokenValid(token))
+                    throw new RuntimeException("token is not valid");
             }
             return chain.filter(exchange);
         };
