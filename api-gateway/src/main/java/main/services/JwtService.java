@@ -34,16 +34,15 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-    private Date EXtractExpirationDate(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    private Date extractExpirationDate(String token) {
+        return  extractClaim(token, Claims::getExpiration);
     }
 
     private boolean isTokenExpired(String token) {
-        return EXtractExpirationDate(token).before(new Date());
+        return  extractExpirationDate(token).before(new Date());
     }
 
     public String extractUsername(String token) {
         return  extractClaim(token,Claims::getSubject);
     }
-
 }
