@@ -17,10 +17,15 @@ public class JwtService {
         System.out.println("token = " + token);
         try {
             extractClaims(token);
-            return !isTokenExpired(token);
+            if(isTokenExpired(token)){
+                throw new RuntimeException("TOKEN EXPIRED");
+            }
         } catch (Exception e) {
-            return false;
+            e.printStackTrace();
+            throw  new RuntimeException("isTokenValid? : "+e.getMessage());
         }
+
+        return true;
     }
 
     private Claims extractClaims(String token) {

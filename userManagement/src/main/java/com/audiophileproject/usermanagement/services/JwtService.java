@@ -8,6 +8,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -68,14 +69,14 @@ public class JwtService {
 
         // saves the private and public keys to the disk
         // you can comment it after generating the keys files
-        saveKeyPair();
+//        saveKeyPair();
 
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000*60)) // 1 minute
+                .setExpiration(new Date(System.currentTimeMillis() + 1000*60*5)) // 5 minute
                 .signWith(getSignInKey(), SignatureAlgorithm.RS256)
                 .compact();
     }
@@ -141,6 +142,7 @@ public class JwtService {
             return null;
         }
     }
+
     private void saveKeyPair(){
         try{
             KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
