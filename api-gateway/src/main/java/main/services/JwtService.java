@@ -13,18 +13,17 @@ import java.util.function.Function;
 public class JwtService {
     private final JwtParser jwtParser;
 
-    public boolean isTokenValid(String token){
+    public boolean isTokenValid(String token) {
         System.out.println("token = " + token);
-        return true;
-        // TODO: validate the token with the actual public key
-//        try {
-//            final var claims = extractClaims(token);
-//            return !isTokenExpired(token);
-//        } catch (Exception e) {
-//            return false;
-//        }
+        try {
+            extractClaims(token);
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
-    private Claims extractClaims(String token){
+
+    private Claims extractClaims(String token) {
         return jwtParser
                 .parseClaimsJws(token)
                 .getBody();
@@ -36,10 +35,11 @@ public class JwtService {
     }
 
     private Date EXtractExpirationDate(String token) {
-        return  extractClaim(token, Claims::getExpiration);
+        return extractClaim(token, Claims::getExpiration);
     }
 
     private boolean isTokenExpired(String token) {
-        return  EXtractExpirationDate(token).before(new Date());
+        return EXtractExpirationDate(token).before(new Date());
     }
+
 }
