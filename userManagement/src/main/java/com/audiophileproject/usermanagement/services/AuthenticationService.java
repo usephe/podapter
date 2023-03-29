@@ -73,7 +73,6 @@ public class AuthenticationService {
      * @return AuthenticationResponse
      *
      */
-    // TODO complete this method
     public AuthenticationResponse handleRefresh(String token) throws Exception {
         RefreshToken  refreshToken = refreshTokenRepository.findByToken(token).orElseThrow(()->{
             return  new Exception("Token Not Valid");
