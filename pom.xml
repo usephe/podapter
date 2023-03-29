@@ -17,7 +17,7 @@
       <module>userManagement</module>
     <module>discovery-server</module>
     <module>api-gateway</module>
-    <module>audioScraping</module>
+    <module>scraping-service</module>
   </modules>
 
   <properties>

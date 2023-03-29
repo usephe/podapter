@@ -24,7 +24,7 @@ public class JwtConfig {
 
     private PublicKey getPublicKey() {
         try {
-            File publicKeyFile = new File("userManagement/public.key");
+            File publicKeyFile = new File("api-gateway/public.key");
             byte[] publicKeyBytes = Files.readAllBytes(publicKeyFile.toPath());
             KeyFactory keyFactory = KeyFactory.getInstance("RSA");
             EncodedKeySpec publicKeySpec = new X509EncodedKeySpec(publicKeyBytes);
