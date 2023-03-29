@@ -20,13 +20,16 @@ public class ContentController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ContentResponse createContent(@Valid @RequestBody ContentRequest request) {
+	public ContentResponse createContent(
+			@Valid @RequestBody ContentRequest request,
+			@RequestHeader("userId") String userId
+	) {
 		var content = Content.builder()
 				.title(request.getTitle())
 				.description(request.getDescription())
 				.fileUrl(request.getFileUrl())
 				.build();
-		var c = contentService.createContent(content);
+		var c = contentService.createContent(content, userId);
 		return ContentResponse.builder()
 				.id(c.getId())
 				.title(c.getTitle())
