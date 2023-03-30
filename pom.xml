@@ -18,6 +18,7 @@
     <module>discovery-server</module>
     <module>api-gateway</module>
     <module>scraping-service</module>
+    <module>podcastService</module>
   </modules>
 
   <properties>
