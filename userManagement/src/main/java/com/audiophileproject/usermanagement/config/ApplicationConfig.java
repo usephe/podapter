@@ -43,7 +43,6 @@ public class ApplicationConfig {
 
 
     @PostConstruct
-
     private void saveKeyPair(){
         try{
             KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
