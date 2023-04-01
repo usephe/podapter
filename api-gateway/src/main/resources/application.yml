@@ -36,9 +36,12 @@ spring:
           uri: lb://scraping-service
           predicates:
             - Path=/api/v1/scraper
+        - id: podcast-service
+          uri: lb://podcast-service
+          predicates:
+            - Path=/podcast/**
 
 eureka:
   client:
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
-
