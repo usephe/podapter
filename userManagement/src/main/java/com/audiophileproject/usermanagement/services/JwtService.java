@@ -137,29 +137,4 @@ public class JwtService {
             return null;
         }
     }
-
-    private void saveKeyPair(){
-        try{
-            KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-            KeyPair keyPair= generator.generateKeyPair();
-            PrivateKey privateKey = keyPair.getPrivate();
-            PublicKey publicKey = keyPair.getPublic();
-
-            try(FileOutputStream fos = new FileOutputStream("userManagement/public.key")){
-                fos.write(publicKey.getEncoded());
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-            try(FileOutputStream fos = new FileOutputStream("userManagement/private.key")){
-                fos.write(privateKey.getEncoded());
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }catch (NoSuchAlgorithmException e){
-            e.printStackTrace();
-        }
-
-    }
-
-
 }
