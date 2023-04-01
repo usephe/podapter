@@ -4,10 +4,7 @@ package com.audiophileproject.usermanagement.controllers;
 import com.audiophileproject.usermanagement.models.*;
 import com.audiophileproject.usermanagement.services.AuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,8 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.datatype.DatatypeConstants;
-import java.net.http.HttpResponse;
 import java.util.HashMap;
 import java.util.Map;
 
