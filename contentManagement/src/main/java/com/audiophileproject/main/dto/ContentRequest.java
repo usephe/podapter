@@ -1,9 +1,12 @@
-package com.audiophileproject.main.controllers;
+package com.audiophileproject.main.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.Date;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -11,8 +14,11 @@ import lombok.NoArgsConstructor;
 public class ContentRequest {
 	@NotBlank(message = "the title is required")
 	private String title;
-	@NotBlank(message = "the description is required")
+	@NotBlank(message = "the url is required")
+	private String url;
+	private String type;
+	private Long length;
+	private Date pubDate;
 	private String description;
-	@NotBlank(message = "the fileUrl is required")
-	private String fileUrl;
+	private List<String> tags;
 }

@@ -1,14 +1,15 @@
 package com.audiophileproject.main.controllers;
 
+import com.audiophileproject.main.dto.ContentRequest;
+import com.audiophileproject.main.dto.ContentResponse;
+import com.audiophileproject.main.dto.ContentResponseMapper;
 import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.services.ContentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/content")
 public class ContentController {
 	private final ContentService contentService;
+	private final ContentResponseMapper contentResponseMapper;
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
@@ -26,41 +28,29 @@ public class ContentController {
 	) {
 		var content = Content.builder()
 				.title(request.getTitle())
+				.url(request.getUrl())
+				.type(request.getType())
+				.length(request.getLength())
+				.pubDate(request.getPubDate())
 				.description(request.getDescription())
-				.fileUrl(request.getFileUrl())
+				.tags(request.getTags())
 				.build();
+
 		var c = contentService.createContent(content, userId);
-		return ContentResponse.builder()
-				.id(c.getId())
-				.title(c.getTitle())
-				.description(c.getDescription())
-				.fileUrl(c.getFileUrl())
-				.build();
+		return contentResponseMapper.apply(c);
 	}
 
 	@GetMapping("/{id}")
 	public ContentResponse getContentById(@PathVariable Long id) {
 		var content = contentService.getContentById(1L);
-		return ContentResponse.builder()
-				.id(content.getId())
-				.title(content.getTitle())
-				.description(content.getDescription())
-				.fileUrl(content.getFileUrl())
-				.build();
+		return contentResponseMapper.apply(content);
 	}
 
 	@GetMapping
-	public List<ContentResponse> getAllContent() {
-		var contents = contentService.getAllContent();
+	public List<ContentResponse> getAllContent(@RequestHeader("userId") String userId) {
+		var contents = contentService.getAllContent(userId);
 		return contents.stream()
-				.map(
-						content -> ContentResponse.builder()
-								.id(content.getId())
-								.title(content.getTitle())
-								.description(content.getDescription())
-								.fileUrl(content.getFileUrl())
-								.build()
-				)
+				.map(contentResponseMapper)
 				.collect(Collectors.toList());
 	}
 
