@@ -3,6 +3,7 @@ package com.audiophileproject.main.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
 
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -11,8 +12,8 @@ import java.util.List;
 public record ContentResponse (
 	 long id,
 	 String title,
-	 String url,
-	 String type,
+	 URL url,
+	 String contentType,
 	 Long length,
 	 Date pubDate,
 	 String description,

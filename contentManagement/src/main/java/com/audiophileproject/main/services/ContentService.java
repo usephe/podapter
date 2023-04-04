@@ -4,11 +4,11 @@ import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.repositories.ContentRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
 
@@ -17,16 +17,19 @@ import java.util.List;
 public class ContentService {
 	private final ContentRepository contentRepository;
 
-    // TODO: move the heavy processing after responding to client
     public Content createContent(Content content, String userId) {
         content.setUserId(userId);
         if (content.getPubDate() == null)
             content.setPubDate(new Date());
-        if (content.getType() == null) {
+        if (content.getContentType() == null) {
             try {
-                content.setType(getAudioType(content.getUrl()));
+                URL url = content.getUrl();
+                URLConnection connection = url.openConnection();
+                content.setLength(connection.getContentLengthLong());
+                String contentType = connection.getContentType();
+                content.setContentType(contentType);
             } catch (IOException e) {
-                System.out.println("Unsupported URL type");
+                System.out.println("Unsupported URL contentType");
             }
         }
 
@@ -48,12 +51,5 @@ public class ContentService {
             return;
 
         contentRepository.deleteById(id);
-    }
-
-    private String getAudioType(String url) throws IOException {
-        Tika tika = new Tika();
-        String mimeType = tika.detect(new URL(url));
-        return mimeType;
-//        return mimeType.startsWith("audio/") ? mimeType.substring(6) : "Unknown";
     }
 }
