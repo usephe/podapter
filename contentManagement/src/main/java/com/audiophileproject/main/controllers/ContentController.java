@@ -29,7 +29,7 @@ public class ContentController {
 		var content = Content.builder()
 				.title(request.getTitle())
 				.url(request.getUrl())
-				.type(request.getType())
+				.contentType(request.getContentType())
 				.length(request.getLength())
 				.pubDate(request.getPubDate())
 				.description(request.getDescription())

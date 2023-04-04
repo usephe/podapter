@@ -13,7 +13,7 @@ public class ContentResponseMapper implements Function<Content, ContentResponse>
                 .id(content.getId())
                 .title(content.getTitle())
                 .url(content.getUrl())
-                .type(content.getType())
+                .contentType(content.getContentType())
                 .length(content.getLength())
                 .pubDate(content.getPubDate())
                 .description(content.getDescription())

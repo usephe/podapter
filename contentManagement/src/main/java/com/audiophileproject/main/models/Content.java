@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
+import java.net.URL;
 import java.util.Date;
 import java.util.List;
 
@@ -29,8 +30,9 @@ public class Content {
 	@NotNull
 	private String title;
 	@NotNull
-	private String url;
-	private String type;
+	@Column(columnDefinition = "TEXT")
+	private URL url;
+	private String contentType;
 	private Long length;
 	@Lob
 	private String description;
