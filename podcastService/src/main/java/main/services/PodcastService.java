@@ -7,7 +7,6 @@ import main.models.Podcast;
 import main.proxies.ContentProxy;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,8 +51,8 @@ public class PodcastService {
 
                     SyndEnclosure enclosure = new SyndEnclosureImpl();
                     enclosure.setUrl(content.url());
-                    enclosure.setType(content.type());
-                    enclosure.setLength(498537);
+                    enclosure.setType(content.contentType());
+                    enclosure.setLength(content.length());
                     entry.setEnclosures(List.of(enclosure));
                     return entry;
                 }

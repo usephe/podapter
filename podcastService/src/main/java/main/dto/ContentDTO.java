@@ -11,8 +11,8 @@ public record ContentDTO(
 		long id,
 		String title,
 		String url,
-		String type,
-		Long length,
+		String contentType,
+		long length,
 		Date pubDate,
 		String description,
 		List<String> tags
