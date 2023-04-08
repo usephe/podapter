@@ -48,7 +48,7 @@ public class ContentController {
 
 	@GetMapping("/{id}")
 	public ContentResponse getContentById(@PathVariable Long id) {
-		var content = contentService.getContentById(1L);
+		var content = contentService.getContentById(id);
 		return contentResponseMapper.apply(content);
 	}
 
