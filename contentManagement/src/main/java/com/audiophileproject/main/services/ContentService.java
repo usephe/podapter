@@ -59,7 +59,7 @@ public class ContentService {
     }
 
     public Content getContentById(Long id) {
-        return contentRepository.findById(id).orElse(null);
+        return contentRepository.findById(id).orElseThrow();
     }
 
     @Transactional
