@@ -14,7 +14,7 @@ public record ContentResponse (
 	 String title,
 	 URL url,
 	 String contentType,
-	 Long length,
+	 long length,
 	 Date pubDate,
 	 String description,
 	 List<String> tags
