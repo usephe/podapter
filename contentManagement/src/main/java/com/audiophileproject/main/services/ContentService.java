@@ -58,8 +58,8 @@ public class ContentService {
         };
     }
 
-    public Content getContentById(Long id) {
-        return contentRepository.findById(id).orElseThrow();
+    public Content getContentById(Long id, String userId) {
+        return contentRepository.findByIdAndUserId(id, userId).orElseThrow();
     }
 
     @Transactional
@@ -67,7 +67,7 @@ public class ContentService {
         return contentRepository.findAllByUserId(userId);
     }
 
-    public void deleteContentById(Long id) {
-        contentRepository.delete(contentRepository.findById(id).orElseThrow());
+    public void deleteContentById(Long id, String userId) {
+        contentRepository.delete(contentRepository.findByIdAndUserId(id, userId).orElseThrow());
     }
 }
