@@ -47,9 +47,13 @@ public class ContentController {
 	}
 
 	@GetMapping("/{id}")
-	public ContentResponse getContentById(@PathVariable Long id) {
-		var content = contentService.getContentById(id);
-		return contentResponseMapper.apply(content);
+	public ContentResponse getContentById(
+			@PathVariable Long id,
+			@RequestHeader String userId
+	) {
+		return contentResponseMapper.apply(
+				contentService.getContentById(id, userId)
+		);
 	}
 
 	@GetMapping
@@ -62,7 +66,10 @@ public class ContentController {
 
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteContentById(@PathVariable Long id) {
-		contentService.deleteContentById(id);
+	public void deleteContentById(
+			@PathVariable Long id,
+			@RequestHeader String userId
+	) {
+		contentService.deleteContentById(id, userId);
 	}
 }
