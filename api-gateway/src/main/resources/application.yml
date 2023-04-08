@@ -34,7 +34,7 @@ spring:
         - id: content-management
           uri: lb://content-management
           predicates:
-            - Path=/api/v1/content
+            - Path=/api/v1/content/**
           filters:
             - JwtAuthenticationFilter
         - id: user-management
