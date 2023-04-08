@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice {
@@ -50,9 +51,14 @@ public class ExceptionControllerAdvice {
                    )
            );
 
-
        var error = new ErrorDetails(HttpStatus.BAD_REQUEST, "Failed to read request", ex);
        error.setSubErrors(subErrors);
        return ResponseEntity.badRequest().body(error);
+   }
+
+   @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ErrorDetails> exceptionNoSuchElementHandler(NoSuchElementException ex) {
+       var error = new ErrorDetails(HttpStatus.NOT_FOUND, "Element not found", ex);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
    }
 }
