@@ -3,6 +3,7 @@ package com.audiophileproject.main.controllers;
 import com.audiophileproject.main.dto.ContentRequest;
 import com.audiophileproject.main.dto.ContentResponse;
 import com.audiophileproject.main.dto.ContentResponseMapper;
+import com.audiophileproject.main.exceptions.UnsupportedContentType;
 import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.services.ContentService;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class ContentController {
 	public ContentResponse createContent(
 			@Valid @RequestBody ContentRequest request,
 			@RequestHeader("userId") String userId
-	) {
+	) throws UnsupportedContentType {
 		var content = Content.builder()
 				.title(request.getTitle())
 				.url(request.getUrl())
