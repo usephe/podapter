@@ -68,10 +68,6 @@ public class ContentService {
     }
 
     public void deleteContentById(Long id) {
-        var content = contentRepository.findById(id).orElse(null);
-        if (content == null)
-            return;
-
-        contentRepository.deleteById(id);
+        contentRepository.delete(contentRepository.findById(id).orElseThrow());
     }
 }
