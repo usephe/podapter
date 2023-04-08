@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -18,6 +19,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/content")
 public class ContentController {
 	private final ContentService contentService;
+	private final static Logger logger =
+			Logger.getLogger(ContentController.class.getName());
+
 	private final ContentResponseMapper contentResponseMapper;
 
 	@PostMapping
@@ -37,6 +41,7 @@ public class ContentController {
 				.build();
 
 		var c = contentService.createContent(content, userId);
+		logger.info("Creating a content: " + c);
 		return contentResponseMapper.apply(c);
 	}
 
