@@ -13,12 +13,13 @@
   <url>https://www.audiophileproject.com</url>
 
   <modules>
-    <module>contentManagement</module>
-      <module>userManagement</module>
     <module>discovery-server</module>
+    <module>userManagement</module>
     <module>api-gateway</module>
+    <module>contentManagement</module>
     <module>scraping-service</module>
     <module>podcastService</module>
+    <module>streaming-service</module>
   </modules>
 
   <properties>
@@ -75,6 +76,62 @@
           <artifactId>spring-boot-maven-plugin</artifactId>
           <version>${spring.boot.maven.plugin.version}</version>
         </plugin>
+
+
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.6.0</version>
+          <executions>
+            <execution>
+              <id>run-microservices</id>
+              <phase>integration-test</phase>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+              <configuration>
+                <workingDirectory>${project.basedir}/discovery-server</workingDirectory>
+                <executable>mvn</executable>
+                <arguments>
+                  <argument>spring-boot:run</argument>
+                </arguments>
+              </configuration>
+            </execution>
+            <execution>
+              <id>run-user-management</id>
+              <phase>integration-test</phase>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+              <configuration>
+                <workingDirectory>${project.basedir}/userManagement</workingDirectory>
+                <executable>mvn</executable>
+                <arguments>
+                  <argument>spring-boot:run</argument>
+                </arguments>
+              </configuration>
+            </execution>
+            <execution>
+              <id>run-gateway</id>
+              <phase>integration-test</phase>
+              <goals>
+                <goal>exec</goal>
+              </goals>
+              <configuration>
+                <workingDirectory>${project.basedir}/api-gateway</workingDirectory>
+                <executable>java</executable>
+                <arguments>
+                  <argument>-jar</argument>
+                  <argument>target/userManagement-${version}.jar</argument>
+                </arguments>
+              </configuration>
+            </execution>
+            <!-- add more executions for other microservices -->
+          </executions>
+        </plugin>
+
+
+
       </plugins>
     </pluginManagement>
   </build>
