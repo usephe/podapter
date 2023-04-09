@@ -1,8 +1,7 @@
 package com.audiophileproject.main.controllers;
 
-import com.audiophileproject.main.dto.ContentRequest;
-import com.audiophileproject.main.dto.ContentResponse;
-import com.audiophileproject.main.dto.ContentResponseMapper;
+import com.audiophileproject.main.dto.ContentDTO;
+import com.audiophileproject.main.dto.ContentDTOMapper;
 import com.audiophileproject.main.exceptions.UnsupportedContentType;
 import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.services.ContentService;
@@ -22,45 +21,44 @@ public class ContentController {
 	private final ContentService contentService;
 	private final static Logger logger =
 			Logger.getLogger(ContentController.class.getName());
-
-	private final ContentResponseMapper contentResponseMapper;
+	private final ContentDTOMapper contentDTOMapper;
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ContentResponse createContent(
-			@Valid @RequestBody ContentRequest request,
-			@RequestHeader("userId") String userId
+	public ContentDTO createContent(
+			@Valid @RequestBody ContentDTO contentDTO,
+			@RequestHeader String userId
 	) throws UnsupportedContentType {
 		var content = Content.builder()
-				.title(request.getTitle())
-				.url(request.getUrl())
-				.contentType(request.getContentType())
-				.length(request.getLength())
-				.pubDate(request.getPubDate())
-				.description(request.getDescription())
-				.tags(request.getTags())
+				.title(contentDTO.title())
+				.url(contentDTO.url())
+				.contentType(contentDTO.contentType())
+				.length(contentDTO.length())
+				.pubDate(contentDTO.pubDate())
+				.description(contentDTO.description())
+				.tags(contentDTO.tags())
 				.build();
 
 		var c = contentService.createContent(content, userId);
 		logger.info("Creating a content: " + c);
-		return contentResponseMapper.apply(c);
+		return contentDTOMapper.apply(c);
 	}
 
 	@GetMapping("/{id}")
-	public ContentResponse getContentById(
+	public ContentDTO getContentById(
 			@PathVariable Long id,
 			@RequestHeader String userId
 	) {
-		return contentResponseMapper.apply(
+		return contentDTOMapper.apply(
 				contentService.getContentById(id, userId)
 		);
 	}
 
 	@GetMapping
-	public List<ContentResponse> getAllContent(@RequestHeader("userId") String userId) {
+	public List<ContentDTO> getAllContent(@RequestHeader String userId) {
 		var contents = contentService.getAllContent(userId);
 		return contents.stream()
-				.map(contentResponseMapper)
+				.map(contentDTOMapper)
 				.collect(Collectors.toList());
 	}
 
