@@ -25,11 +25,12 @@ public class PodcastController {
             @RequestParam(defaultValue = "-1", required = false) int limit,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateStart,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") Date dateEnd,
+            @RequestParam(required = false) String title,
             @RequestParam(required = false) String tag
     ) throws FeedException {
         System.out.println("dateStart = " + dateStart);
         System.out.println("dateEnd = " + dateEnd);
-        SyndFeed feed = podcastService.generatePodcastFeed(userId, tag, dateStart, dateEnd, limit);
+        SyndFeed feed = podcastService.generatePodcastFeed(userId, title, tag, dateStart, dateEnd, limit);
         SyndFeedOutput xmlFeed = new SyndFeedOutput();
         return xmlFeed.outputString(feed);
     }
