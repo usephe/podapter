@@ -17,7 +17,7 @@ public class ScrapingController {
 
 
     @GetMapping
-    public RedirectView scrapUrl(@RequestParam(name = "url") URL url){
+    public String scrapUrl(@RequestParam(name = "url") URL url){
         return scrapingService.scrapUrl(url);
     }
 }
