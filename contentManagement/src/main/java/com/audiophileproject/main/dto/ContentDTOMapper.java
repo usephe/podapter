@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 
 @Component
-public class ContentResponseMapper implements Function<Content, ContentResponse> {
+public class ContentDTOMapper implements Function<Content, ContentDTO> {
     @Override
-    public ContentResponse apply(Content content) {
-        return ContentResponse.builder()
+    public ContentDTO apply(Content content) {
+        return ContentDTO.builder()
                 .id(content.getId())
                 .title(content.getTitle())
                 .url(content.getUrl())
