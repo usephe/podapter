@@ -1,5 +1,6 @@
 package com.audiophileproject.services;
 
+import com.audiophileproject.proxies.ScrapingProxy;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,29 +26,15 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Slf4j
 public class StreamingService {
-
-    private final RestTemplate restTemplate;
+    private final ScrapingProxy scrapingProxy;
 
     @Cacheable(value = "urlCache", cacheManager = "springCM")
     public String getTargetURL(String url_str) {
 
         Date start = new Date();
         log.debug("GETTING ACTUAL URL...");
+        String targetURLString = scrapingProxy.scrapUrl(url_str);
 
-        // set the URL endpoint and the parameter value
-        String scrap_url = "http://localhost:8080/api/v1/scraper?url={urlValue}";
-        String urlValue = url_str;
-
-        // create a URI object with the endpoint and the parameter value
-        URI uri = UriComponentsBuilder.fromUriString(scrap_url)
-                .buildAndExpand(urlValue)
-                .toUri();
-
-        // fetch the target url
-        String targetURLString = restTemplate.getForObject(
-                uri,
-                String.class
-        );
         if(targetURLString == null) throw new RuntimeException("Something went wrong: Can't get the audio file");
 
         log.debug("target url --->");
