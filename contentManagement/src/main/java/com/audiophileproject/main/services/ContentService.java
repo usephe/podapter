@@ -63,13 +63,7 @@ public class ContentService {
         return isSupportedAudioType(mediaType);
     }
     private boolean isSupportedAudioType(MediaType mediaType) {
-        if (!mediaType.getType().equals("audio"))
-            return false;
-
-        return switch (mediaType.getSubtype()) {
-            case "aac", "m4a", "mp3", "mpeg", "ogg", "wav" -> true;
-            default -> false;
-        };
+        return mediaType.getType().equals("audio");
     }
 
     public Content getContentById(Long id, String userId) {
