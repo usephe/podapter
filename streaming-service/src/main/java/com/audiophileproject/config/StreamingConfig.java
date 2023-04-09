@@ -6,6 +6,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
@@ -17,6 +18,7 @@ import java.util.List;
 @Configuration
 @EnableCaching
 @EnableDiscoveryClient
+@EnableFeignClients(basePackages = "com.audiophileproject.proxies")
 @Slf4j
 public class StreamingConfig {
 
@@ -25,17 +27,5 @@ public class StreamingConfig {
         ConcurrentMapCacheManager mgr = new ConcurrentMapCacheManager();
         mgr.setCacheNames(List.of("urlCache"));
         return mgr;
-    }
-    @Bean
-    public RestTemplate restTemplate(){
-        return new RestTemplateBuilder().additionalInterceptors((request, body, execution) -> {
-                    HttpHeaders headers = request.getHeaders();
-                    log.debug("Request headers: "+headers);
-                    ClientHttpResponse response = execution.execute(request, body);
-                    HttpHeaders responseHeaders = response.getHeaders();
-                    log.debug("Response headers: "+ responseHeaders);
-                    return response;
-                })
-                .build();
     }
 }
