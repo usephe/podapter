@@ -44,6 +44,26 @@ public class ContentController {
 		return contentDTOMapper.apply(c);
 	}
 
+	@PutMapping("/{id}")
+	public ContentDTO updateContent(
+			@PathVariable Long id,
+			@Valid @RequestBody ContentDTO contentDTO,
+			@RequestHeader String userId
+	) {
+		var content = Content.builder()
+				.title(contentDTO.title())
+				.url(contentDTO.url())
+				.contentType(contentDTO.contentType())
+				.length(contentDTO.length())
+				.pubDate(contentDTO.pubDate())
+				.description(contentDTO.description())
+				.tags(contentDTO.tags())
+				.build();
+		var c = contentService.updateContent(id, content, userId);
+		logger.info("Updating content {id=" + id + "}: " + c);
+		return contentDTOMapper.apply(c);
+	}
+
 	@GetMapping("/{id}")
 	public ContentDTO getContentById(
 			@PathVariable Long id,

@@ -44,6 +44,20 @@ public class ContentService {
         return contentRepository.save(content);
     }
 
+    @Transactional
+    public Content updateContent(Long id, Content newContent, String userId) {
+        Content existingContent = contentRepository.findByIdAndUserId(id, userId).orElseThrow();
+
+        existingContent.setTitle(newContent.getTitle());
+        existingContent.setUrl(newContent.getUrl());
+        existingContent.setContentType(newContent.getContentType());
+        existingContent.setLength(newContent.getLength());
+        existingContent.setPubDate(newContent.getPubDate());
+        existingContent.setDescription(newContent.getDescription());
+        existingContent.setTags(newContent.getTags());
+
+        return contentRepository.save(existingContent);
+    }
     private boolean isSupportedMediaType(String type) {
         MediaType mediaType = MediaType.parseMediaType(type);
         return isSupportedAudioType(mediaType);

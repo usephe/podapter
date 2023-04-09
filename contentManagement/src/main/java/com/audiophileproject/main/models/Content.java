@@ -37,7 +37,6 @@ public class Content {
 	private Long length;
 	@Lob
 	private String description;
-	@NotNull
 	private Date pubDate;
 	@ElementCollection
 	private List<String> tags;
