@@ -1,0 +1,28 @@
+
+server:
+  port: 0
+
+spring:
+  application:
+    name: streaming-service
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
+  mvc:
+    dispatch-options-request: true
+  cache:
+    type: SIMPLE
+
+logging:
+  level:
+    org:
+      springframework:
+        web: DEBUG
+        context: DEBUG
+#    root: DEBUG
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
