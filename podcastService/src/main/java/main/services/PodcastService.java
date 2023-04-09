@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 @Service
 public class PodcastService {
     private final ContentProxy contentProxy;
-    public SyndFeed generatePodcastFeed(String userId, String tag, Date dateStart, Date dateEnd, int limit) {
+    public SyndFeed generatePodcastFeed(String userId, String title, String tag, Date dateStart, Date dateEnd, int limit) {
         var contents = contentProxy.getAllContent(userId);
         List<ContentDTO> filteredContents = contents;
         if (dateStart != null || dateEnd != null)
@@ -58,10 +58,19 @@ public class PodcastService {
                 }
         ).collect(Collectors.toList());
 
-        Podcast podcast = Podcast
-                .builder()
-                .entries(entries)
-                .build();
+        Podcast podcast;
+        if (title != null) {
+            podcast = Podcast
+                    .builder()
+                    .title(title)
+                    .entries(entries)
+                    .build();
+        } else {
+            podcast = Podcast
+                    .builder()
+                    .entries(entries)
+                    .build();
+        }
 
         return podcast.generatePodcastFeed();
     }
