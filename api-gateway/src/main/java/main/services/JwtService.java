@@ -14,7 +14,6 @@ public class JwtService {
     private final JwtParser jwtParser;
 
     public boolean isTokenValid(String token) {
-        System.out.println("token = " + token);
         try {
             extractClaims(token);
             if(isTokenExpired(token)){
