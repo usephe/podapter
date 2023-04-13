@@ -53,8 +53,10 @@ public class JwtAuthenticationFilter extends AbstractGatewayFilterFactory<JwtAut
             throw new JwtException("Invalid token");
         }
         var token = authHeader.substring(authPrefix.length());
-        if (!jwtService.isTokenValid(token))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid token");
+        if (!jwtService.isTokenValid(token)) {
+            logger.info("Invalid token: " + token);
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Forbidden access");
+        }
         return token;
     }
 }
