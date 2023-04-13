@@ -4,15 +4,14 @@ package com.audiophileproject.usermanagement.controllers;
 import com.audiophileproject.usermanagement.models.*;
 import com.audiophileproject.usermanagement.services.AuthenticationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,17 +26,32 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> signup(
-            @RequestBody RegisterRequest request
+            @RequestBody RegisterRequest request,
+            HttpServletResponse response
 
     ) {
-        return ResponseEntity.ok(authService.register(request));
+        var authenticationResponse = authService.register(request);
+        setHttpOnlyRefreshTokenCookie(response, authenticationResponse.getRefreshToken());
+        return ResponseEntity.ok(authenticationResponse);
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> login(
-            @RequestBody AuthenticationRequest request
+            @RequestBody AuthenticationRequest request,
+            HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authService.authenticate(request));
+        var authenticationResponse = authService.authenticate(request);
+        setHttpOnlyRefreshTokenCookie(response, authenticationResponse.getRefreshToken());
+        return ResponseEntity.ok(authenticationResponse);
+    }
+
+    private void setHttpOnlyRefreshTokenCookie(HttpServletResponse response, String refreshToken) {
+        // Set the refresh token in an HttpOnly cookie
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(-1);
+        response.addCookie(refreshTokenCookie);
     }
 
     @PostMapping("/logout")
@@ -47,9 +61,10 @@ public class AuthController {
     }
 
     // TODO complete this endpoint
-    @PostMapping(value = "/refresh")
+    @GetMapping(value = "/refresh")
     public void authenticate(
-            @RequestBody String refreshToken, HttpServletResponse response
+            @CookieValue(name = "refreshToken") String refreshToken,
+            HttpServletResponse response
     ) {
 
         try {
