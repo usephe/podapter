@@ -16,15 +16,10 @@ public class JwtService {
     public boolean isTokenValid(String token) {
         try {
             extractClaims(token);
-            if(isTokenExpired(token)){
-                throw new RuntimeException("TOKEN EXPIRED");
-            }
+            return !isTokenExpired(token);
         } catch (Exception e) {
-            e.printStackTrace();
-            throw  new RuntimeException("isTokenValid? : "+e.getMessage());
+            return false;
         }
-
-        return true;
     }
 
     private Claims extractClaims(String token) {
