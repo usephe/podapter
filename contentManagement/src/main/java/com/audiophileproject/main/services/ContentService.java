@@ -75,6 +75,7 @@ public class ContentService {
         return contentRepository.findAllByUserId(userId);
     }
 
+    @Transactional
     public void deleteContentById(Long id, String userId) {
         contentRepository.delete(contentRepository.findByIdAndUserId(id, userId).orElseThrow());
     }
