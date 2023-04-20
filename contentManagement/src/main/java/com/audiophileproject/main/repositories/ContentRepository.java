@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface ContentRepository extends JpaRepository<Content, Long> {
     List<Content> findAllByUserId(String userId);
-
     Optional<Content> findByIdAndUserId(Long id, String userId);
+    long deleteByIdAndUserId(Long id, String userId);
 }

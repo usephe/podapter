@@ -13,6 +13,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @AllArgsConstructor
@@ -77,6 +78,8 @@ public class ContentService {
 
     @Transactional
     public void deleteContentById(Long id, String userId) {
-        contentRepository.delete(contentRepository.findByIdAndUserId(id, userId).orElseThrow());
+        long numberOfEntriesDeleted = contentRepository.deleteByIdAndUserId(id, userId);
+        if (numberOfEntriesDeleted == 0)
+            throw new NoSuchElementException();
     }
 }
