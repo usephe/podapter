@@ -49,16 +49,17 @@ public class ContentController {
 			@PathVariable Long id,
 			@Valid @RequestBody ContentDTO contentDTO,
 			@RequestHeader String userId
-	) {
-		var content = Content.builder()
-				.title(contentDTO.title())
-				.url(contentDTO.url())
-				.contentType(contentDTO.contentType())
-				.length(contentDTO.length())
-				.pubDate(contentDTO.pubDate())
-				.description(contentDTO.description())
-				.tags(contentDTO.tags())
-				.build();
+	) throws UnsupportedContentType {
+
+		var content = new Content();
+		content.setTitle(contentDTO.title());
+		content.setUrl(contentDTO.url());
+		content.setContentType(contentDTO.contentType());
+		content.setLength(contentDTO.length());
+		content.setPubDate(contentDTO.pubDate());
+		content.setDescription(contentDTO.description());
+		content.setTags(contentDTO.tags());
+
 		var c = contentService.updateContent(id, content, userId);
 		logger.info("Updating content {id=" + id + "}: " + c);
 		return contentDTOMapper.apply(c);
