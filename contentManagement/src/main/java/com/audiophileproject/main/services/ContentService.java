@@ -35,8 +35,6 @@ public class ContentService {
 
         if (content.getContentType() == null) {
             String contentType = connection.getContentType();
-            if (!isSupportedMediaType(contentType))
-                throw new UnsupportedContentType("(" + contentType + ") Unsupported content type");
             content.setContentType(contentType);
         }
         if (content.getLength() == null) {
@@ -46,7 +44,7 @@ public class ContentService {
     }
 
     @Transactional
-    public Content updateContent(Long id, Content newContent, String userId) {
+    public Content updateContent(Long id, Content newContent, String userId) throws UnsupportedContentType {
         Content existingContent = contentRepository.findByIdAndUserId(id, userId).orElseThrow();
 
         existingContent.setTitle(newContent.getTitle());
@@ -58,13 +56,6 @@ public class ContentService {
         existingContent.setTags(newContent.getTags());
 
         return contentRepository.save(existingContent);
-    }
-    private boolean isSupportedMediaType(String type) {
-        MediaType mediaType = MediaType.parseMediaType(type);
-        return isSupportedAudioType(mediaType);
-    }
-    private boolean isSupportedAudioType(MediaType mediaType) {
-        return mediaType.getType().equals("audio");
     }
 
     public Content getContentById(Long id, String userId) {
