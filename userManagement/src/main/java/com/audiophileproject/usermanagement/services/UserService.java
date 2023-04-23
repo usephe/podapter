@@ -6,6 +6,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService implements org.springframework.security.core.userdetails.UserDetailsService {
+public class UserService implements UserDetailsService {
 
     private  final UserRepository userRepository;
 
@@ -32,7 +33,7 @@ public class UserService implements org.springframework.security.core.userdetail
      * @return
      */
     @Transactional
-    public Optional<User> updateUser(User user) {
+    public User updateUser(User user) {
         User currUser = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             userRepository
                     .findById(currUser.getId()) // returns Optional<User>
@@ -44,7 +45,7 @@ public class UserService implements org.springframework.security.core.userdetail
                         userRepository.save(oldUser);
                     });
 
-        return  userRepository.findById(currUser.getId());
+        return  userRepository.findById(currUser.getId()).orElseThrow(()-> new RuntimeException());
     }
 
     public void deleteUser(String username){

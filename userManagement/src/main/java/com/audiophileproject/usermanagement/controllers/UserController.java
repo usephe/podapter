@@ -5,7 +5,6 @@ import com.audiophileproject.usermanagement.models.UserResponse;
 import com.audiophileproject.usermanagement.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -29,7 +28,7 @@ public class UserController {
 
     @PutMapping
     public UserResponse updateUser(@RequestBody User user){
-        User newUser = userService.updateUser(user).orElseThrow(()->new UsernameNotFoundException("User Not Found"));
+        User newUser = userService.updateUser(user);
 
         return UserResponse.builder()
                 .email(newUser.getEmail())
@@ -43,4 +42,5 @@ public class UserController {
         userService.deleteUser(username);
         return "user deleted successfully";
     }
+
 }

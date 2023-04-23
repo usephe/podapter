@@ -3,19 +3,13 @@ package com.audiophileproject.usermanagement.controllers;
 
 import com.audiophileproject.usermanagement.models.*;
 import com.audiophileproject.usermanagement.services.AuthenticationService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -26,7 +20,7 @@ public class AuthController {
 
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> signup(
+    public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request
 
     ) {
@@ -34,7 +28,7 @@ public class AuthController {
     }
 
     @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> login(
+    public ResponseEntity<AuthenticationResponse> authenticate(
             @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(authService.authenticate(request));
@@ -42,30 +36,16 @@ public class AuthController {
 
     @PostMapping("/logout")
     public String logout() {
+        // let's do it on the client side only
 //        authService.logout();
         return "you are now logged out";
     }
 
-    // TODO complete this endpoint
     @PostMapping(value = "/refresh")
-    public void authenticate(
+    public AuthenticationResponse refresh(
             @RequestBody String refreshToken, HttpServletResponse response
     ) {
-
-        try {
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(),authService.handleRefresh(refreshToken));
-        } catch (Exception e) {
-            response.setHeader("error", e.getMessage());
-            response.setStatus(HttpStatus.FORBIDDEN.value());
-            Map<String, String> error = new HashMap<>();
-            error.put("error_message", e.getMessage());
-            try {
-                new ObjectMapper().writeValue(response.getOutputStream(), error);
-            } catch (Exception ee) {
-                ResponseEntity.internalServerError();
-            }
-        }
+            return authService.handleRefresh(refreshToken);
     }
 
 }
