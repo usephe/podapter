@@ -1,5 +1,7 @@
 package com.audiophileproject.usermanagement.services;
 
+import com.audiophileproject.usermanagement.exceptions.InvalidTokenException;
+import com.audiophileproject.usermanagement.exceptions.TokenExpiredException;
 import com.audiophileproject.usermanagement.models.*;
 import com.audiophileproject.usermanagement.repos.RefreshTokenRepository;
 import com.audiophileproject.usermanagement.repos.UserRepository;
@@ -26,6 +28,9 @@ public class AuthenticationService {
 
     // TODO: validate the data before saving it
     public AuthenticationResponse register(RegisterRequest request){
+
+
+
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -44,9 +49,8 @@ public class AuthenticationService {
 
     /**
      * authenticate the user by his email and password
-     * @param request
-     * @return
-     * @apiNote we authenticate by email and not username
+     * @param reques
+     * @return AuthenticationResponse
      */
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         authenticationManager.authenticate(
@@ -72,12 +76,12 @@ public class AuthenticationService {
      * @return AuthenticationResponse
      *
      */
-    public AuthenticationResponse handleRefresh(String token) throws Exception {
+    public AuthenticationResponse handleRefresh(String token)  {
         RefreshToken  refreshToken = refreshTokenRepository.findByToken(token).orElseThrow(()->{
-            return  new Exception("Token Not Valid");
+            throw new InvalidTokenException();
         });
         if(refreshToken.isExpired() || refreshToken.getExpiryDate().isBefore(Instant.now())) {
-            throw  new Exception("Token Expired");
+            throw  new TokenExpiredException();
         }
         else{
             String jwtToken = jwtService.generateToken(refreshToken.getUser());
