@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: podcast-service
+    name: podcast-feed-generator
 
 eureka:
   client:

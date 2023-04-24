@@ -18,7 +18,7 @@
     <module>api-gateway</module>
     <module>contentManagement</module>
     <module>scraping-service</module>
-    <module>podcastService</module>
+    <module>podcastFeedGenerator</module>
     <module>streaming-service</module>
   </modules>
 
