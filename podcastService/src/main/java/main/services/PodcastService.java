@@ -1,21 +1,26 @@
 package main.services;
 
 import com.rometools.rome.feed.synd.*;
+import com.rometools.rome.io.FeedException;
+import com.rometools.rome.io.SyndFeedInput;
 import lombok.RequiredArgsConstructor;
 import main.dto.ContentDTO;
 import main.models.Podcast;
 import main.proxies.ContentProxy;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
+import java.io.StringReader;
+import java.net.URL;
+import java.util.*;
 import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
 @Service
 public class PodcastService {
+    private final YoutubeService youtubeService;
     private final ContentProxy contentProxy;
+
     public SyndFeed generatePodcastFeed(String userId, String title, String tag, Date dateStart, Date dateEnd, int limit) {
         var contents = contentProxy.getAllContent(userId);
         List<ContentDTO> filteredContents = contents;
@@ -58,19 +63,29 @@ public class PodcastService {
                 }
         ).collect(Collectors.toList());
 
-        Podcast podcast;
-        if (title != null) {
-            podcast = Podcast
-                    .builder()
-                    .title(title)
-                    .entries(entries)
-                    .build();
-        } else {
-            podcast = Podcast
-                    .builder()
-                    .entries(entries)
-                    .build();
-        }
+        Podcast podcast = new Podcast();
+        if (title != null)
+            podcast.setTitle(title);
+        podcast.setEntries(entries);
+
+        return podcast.generatePodcastFeed();
+    }
+
+    public SyndFeed generatePodcastFeed(URL url) throws FeedException {
+        String rssFeed = youtubeService.getRssFeed(url);
+
+        var input = new SyndFeedInput();
+        SyndFeed feed = input.build(new StringReader(rssFeed));
+
+        Podcast podcast = new Podcast();
+        if (feed.getTitle() != null)
+            podcast.setTitle(feed.getTitle());
+        if (feed.getDescription() != null)
+            podcast.setDescription(feed.getDescription());
+        if (feed.getAuthor() != null)
+            podcast.setAuthor(feed.getAuthor());
+
+        podcast.setEntries(youtubeService.youtubeEntriesMapper(feed.getEntries()));
 
         return podcast.generatePodcastFeed();
     }

@@ -9,8 +9,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URL;
 import java.util.Date;
-import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -28,9 +29,14 @@ public class PodcastController {
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String tag
     ) throws FeedException {
-        System.out.println("dateStart = " + dateStart);
-        System.out.println("dateEnd = " + dateEnd);
         SyndFeed feed = podcastService.generatePodcastFeed(userId, title, tag, dateStart, dateEnd, limit);
+        SyndFeedOutput xmlFeed = new SyndFeedOutput();
+        return xmlFeed.outputString(feed);
+    }
+
+    @GetMapping(produces = MediaType.APPLICATION_RSS_XML_VALUE)
+    public String getPodcastFeed(@RequestParam URL url) throws FeedException, IOException {
+        SyndFeed feed = podcastService.generatePodcastFeed(url);
         SyndFeedOutput xmlFeed = new SyndFeedOutput();
         return xmlFeed.outputString(feed);
     }

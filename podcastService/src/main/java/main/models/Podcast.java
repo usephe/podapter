@@ -1,15 +1,15 @@
 package main.models;
 
 import com.rometools.rome.feed.synd.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.*;
 
 @Getter
 @Setter
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Podcast {
     @Builder.Default
     private String title = "podapter";
@@ -21,7 +21,6 @@ public class Podcast {
     private String author = "podapter";
     private String category;
     private String language;
-
     private List<SyndEntry> entries;
 
     public SyndFeed generatePodcastFeed() {
