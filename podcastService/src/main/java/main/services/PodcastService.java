@@ -68,18 +68,21 @@ public class PodcastService {
             podcast.setTitle(title);
         podcast.setEntries(entries);
 
-        return podcast.generatePodcastFeed();
+        return podcast.generatePodcastFeed(limit);
     }
 
-    public SyndFeed generatePodcastFeed(URL url) throws FeedException {
+    public SyndFeed generatePodcastFeed(URL url, String title, int limit) throws FeedException {
         String rssFeed = youtubeService.getRssFeed(url);
 
         var input = new SyndFeedInput();
         SyndFeed feed = input.build(new StringReader(rssFeed));
 
         Podcast podcast = new Podcast();
-        if (feed.getTitle() != null)
+        if (title != null)
+            podcast.setTitle(title);
+        else if (feed.getTitle() != null)
             podcast.setTitle(feed.getTitle());
+
         if (feed.getDescription() != null)
             podcast.setDescription(feed.getDescription());
         if (feed.getAuthor() != null)
@@ -87,6 +90,6 @@ public class PodcastService {
 
         podcast.setEntries(youtubeService.youtubeEntriesMapper(feed.getEntries()));
 
-        return podcast.generatePodcastFeed();
+        return podcast.generatePodcastFeed(limit);
     }
 }

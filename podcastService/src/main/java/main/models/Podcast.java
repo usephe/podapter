@@ -23,11 +23,9 @@ public class Podcast {
     private String language;
     private List<SyndEntry> entries;
 
-    public SyndFeed generatePodcastFeed() {
+    public SyndFeed generatePodcastFeed(int entriesLimit) {
         SyndFeed feed = new SyndFeedImpl();
-//        var channel = new Channel();
         feed.setFeedType("rss_2.0");
-//        feed.setNameSpace("", "");
         feed.setTitle(this.title);
         feed.setDescription(this.description);
         feed.setLanguage(this.language);
@@ -40,7 +38,8 @@ public class Podcast {
         image.setWidth(400);
         feed.setImage(image);
 
-        feed.setEntries(entries);
+
+        feed.setEntries(entriesLimit < 0 ? entries : entries.subList(0, Math.min(entries.size(), entriesLimit)));
 
         return feed;
     };

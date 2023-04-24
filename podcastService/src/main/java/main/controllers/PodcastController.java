@@ -35,8 +35,12 @@ public class PodcastController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_RSS_XML_VALUE)
-    public String getPodcastFeed(@RequestParam URL url) throws FeedException, IOException {
-        SyndFeed feed = podcastService.generatePodcastFeed(url);
+    public String getPodcastFeed(
+            @RequestParam URL url,
+            @RequestParam(required = false) String title,
+            @RequestParam(defaultValue = "-1", required = false) int limit
+    ) throws FeedException, IOException {
+        SyndFeed feed = podcastService.generatePodcastFeed(url, title, limit);
         SyndFeedOutput xmlFeed = new SyndFeedOutput();
         return xmlFeed.outputString(feed);
     }
