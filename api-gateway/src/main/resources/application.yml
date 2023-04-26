@@ -56,6 +56,12 @@ spring:
           uri: lb://streaming-service
           predicates:
             - Path=/api/v1/stream
+        - id: storage-service
+          uri: lb://storage-service
+          predicates:
+            - Path=/storage/**
+          filters:
+            - JwtAuthenticationFilter
 
 eureka:
   client:
