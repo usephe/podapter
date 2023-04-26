@@ -20,6 +20,7 @@
     <module>scraping-service</module>
     <module>podcastFeedGenerator</module>
     <module>streaming-service</module>
+    <module>storageService</module>
   </modules>
 
   <properties>

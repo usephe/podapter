@@ -1,0 +1,25 @@
+server:
+  port: 8085
+
+storage:
+  location: /tmp/storage
+
+spring:
+  application:
+    name: storage-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/audiophile
+    username: admin
+    password: admin
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB
