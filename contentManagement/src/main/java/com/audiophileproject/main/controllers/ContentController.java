@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/v1/content")
+@RequestMapping("/content")
 public class ContentController {
 	private final ContentService contentService;
 	private final static Logger logger =
