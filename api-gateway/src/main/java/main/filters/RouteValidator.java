@@ -12,8 +12,8 @@ public class RouteValidator {
             List.of(
                     "/api/v1/auth/register",
                     "/api/v1/auth/refresh",
-                    "/api/v1/auth/authenticate"
-//                    "/eureka"
+                    "/api/v1/auth/authenticate",
+                    "storage/file"
             );
 
     public Predicate<ServerHttpRequest> isSecured =
