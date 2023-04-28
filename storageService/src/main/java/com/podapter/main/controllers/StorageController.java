@@ -33,7 +33,6 @@ public class StorageController {
         return fileDTOMapper.apply(storedFile);
     }
 
-
     @GetMapping
     public List<FileDTO> listUploadedFiles(@RequestHeader String userId) {
         logger.info("Listing all uploaded files for userid: " + userId);
@@ -48,7 +47,6 @@ public class StorageController {
             @PathVariable Long id,
             @RequestHeader String userId
     ) {
-        logger.info("Listing all uploaded files for userid: " + userId);
         return fileDTOMapper.apply(fileService.findById(id, userId));
     }
 

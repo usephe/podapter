@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface FileMetadataRepository extends JpaRepository<FileMetadata, Long> {
     List<FileMetadata> findAllByUserId(String userId);
     Optional<FileMetadata> findByIdAndUserId(Long id, String userId);
-    long deleteByIdAndUserId(Long id, String userId);
+    void deleteByIdAndUserId(Long id, String userId);
     void deleteAllByUserId(String userId);
 }

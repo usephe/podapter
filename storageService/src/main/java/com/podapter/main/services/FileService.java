@@ -1,5 +1,6 @@
 package com.podapter.main.services;
 
+import com.podapter.main.exceptions.StorageFileNotFoundException;
 import com.podapter.main.models.FileMetadata;
 import com.podapter.main.repositories.FileMetadataRepository;
 import jakarta.transaction.Transactional;
@@ -9,9 +10,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -50,8 +53,14 @@ public class FileService {
     public void deleteById(Long id, String userId) {
         var fileMetadata = fileMetadataRepository.findByIdAndUserId(id, userId).orElseThrow();
 
-        if (!storageService.delete(fileMetadata.getFilePath()))
-            throw new RuntimeException("Can't delete file: " + fileMetadata.getOriginalFileName());
+        try {
+            storageService.delete(fileMetadata.getFilePath());
+        } catch (NoSuchFileException e) {
+            logger.warning("File does not exist: " +  e.getMessage() + ": " + fileMetadata);
+        } catch (IOException e) {
+            logger.warning("Failed to delete file: " +  e.getMessage() + ": " + fileMetadata);
+            throw new RuntimeException("Failed to delete file: " + fileMetadata.getOriginalFileName());
+        }
 
         fileMetadataRepository.delete(fileMetadata);
     }
@@ -69,7 +78,12 @@ public class FileService {
 
     public Resource loadAsResourceById(Long id, String userId) {
         FileMetadata fileMetadata = fileMetadataRepository.findByIdAndUserId(id, userId).orElseThrow();
-        return storageService.loadAsResource(fileMetadata.getFilePath());
+        try {
+            return storageService.loadAsResource(fileMetadata.getFilePath());
+        } catch (StorageFileNotFoundException ex) {
+            logger.warning("File does not exist: " +  ex.getMessage() + ": " + fileMetadata);
+            fileMetadataRepository.delete(fileMetadata);
+            throw new NoSuchElementException(ex.getMessage());
+        }
     }
-
 }

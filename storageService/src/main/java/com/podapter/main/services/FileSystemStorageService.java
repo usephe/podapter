@@ -70,6 +70,7 @@ public class FileSystemStorageService {
         }
     }
 
+    // TODO: change the name of the resource to the original file name
     public Resource loadAsResource(Path location) {
         try {
             Path file = load(location);
@@ -90,8 +91,8 @@ public class FileSystemStorageService {
         FileSystemUtils.deleteRecursively(path.toFile());
     }
 
-    public boolean delete(Path filePath) {
-        File file = load(filePath).toFile();
-        return file.delete();
+    public void delete(Path filePath) throws IOException {
+        Path fileSystemPath = load(filePath);
+        Files.delete(fileSystemPath);
     }
 }
