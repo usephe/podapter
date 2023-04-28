@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.multipart.MultipartException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,4 +62,11 @@ public class ExceptionControllerAdvice {
        var error = new ErrorDetails(HttpStatus.NOT_FOUND, "Element not found", ex);
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
    }
+
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ErrorDetails> exceptionMultipartHandler(MultipartException ex) {
+        return ResponseEntity.badRequest().body(
+                new ErrorDetails(HttpStatus.BAD_REQUEST, ex.getMessage(), ex)
+        );
+    }
 }
