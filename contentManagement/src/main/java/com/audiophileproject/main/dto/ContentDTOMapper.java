@@ -1,10 +1,12 @@
 package com.audiophileproject.main.dto;
 
 import com.audiophileproject.main.models.Content;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
 
+@RequiredArgsConstructor
 @Component
 public class ContentDTOMapper implements Function<Content, ContentDTO> {
     @Override

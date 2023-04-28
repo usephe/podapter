@@ -9,8 +9,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,18 @@ public class ContentController {
 		var c = contentService.createContent(content, userId);
 		logger.info("Creating a content: " + c);
 		return contentDTOMapper.apply(c);
+	}
+
+	@PostMapping("/upload")
+	@ResponseStatus(HttpStatus.CREATED)
+	public ContentDTO store(
+			@RequestParam("file") MultipartFile file,
+			@RequestHeader String userId
+	) throws UnsupportedContentType {
+
+		var storedContent = contentService.createContent(file, userId);
+		logger.info("Creating a content: " + storedContent);
+		return contentDTOMapper.apply(storedContent);
 	}
 
 	@PutMapping("/{id}")
@@ -89,6 +103,7 @@ public class ContentController {
 			@PathVariable Long id,
 			@RequestHeader String userId
 	) {
-		contentService.deleteContentById(id, userId);
+		if (contentService.deleteContentById(id, userId) == 0)
+			throw new NoSuchElementException();
 	}
 }

@@ -45,7 +45,6 @@ public class Content {
 	@Column(nullable = false)
 	private String userId;
 
-
 	public void setContentType(String contentType) throws UnsupportedContentType {
 		this.contentType = contentType;
 		if (!isSupportedMediaType(contentType))
@@ -64,5 +63,4 @@ public class Content {
 	private boolean isSupportedAudioType(MediaType mediaType) {
 		return mediaType.getType().equals("audio");
 	}
-
 }

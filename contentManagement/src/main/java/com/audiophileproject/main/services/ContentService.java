@@ -5,8 +5,8 @@ import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.repositories.ContentRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.net.URL;
@@ -18,7 +18,8 @@ import java.util.NoSuchElementException;
 @Service
 @AllArgsConstructor
 public class ContentService {
-	private final ContentRepository contentRepository;
+    private final ContentRepository contentRepository;
+    private final StorageService storageService;
 
     public Content createContent(Content content, String userId) throws UnsupportedContentType {
         content.setUserId(userId);
@@ -26,7 +27,7 @@ public class ContentService {
             content.setPubDate(new Date());
         URL url = content.getUrl();
 
-        URLConnection connection = null;
+        URLConnection connection;
         try {
             connection = url.openConnection();
         } catch (IOException e) {
@@ -44,8 +45,29 @@ public class ContentService {
     }
 
     @Transactional
+    public Content createContent(MultipartFile file, String userId) throws UnsupportedContentType {
+        var fileMetadata = storageService.save(file, userId);
+        var content = Content.builder()
+                .title(fileMetadata.getFileName())
+                .contentType(fileMetadata.getFileType())
+                .url(fileMetadata.getUrl())
+                .build();
+
+        content =  createContent(content, userId);
+        fileMetadata.setContent(content);
+        storageService.save(fileMetadata);
+        return content;
+    }
+
+    @Transactional
     public Content updateContent(Long id, Content newContent, String userId) throws UnsupportedContentType {
         Content existingContent = contentRepository.findByIdAndUserId(id, userId).orElseThrow();
+        try {
+            storageService.findByContentId(id);
+            if (!existingContent.getUrl().toString().equals(newContent.getUrl().toString()))
+                storageService.deleteByContentId(id);
+        } catch (NoSuchElementException ignored) {
+        }
 
         existingContent.setTitle(newContent.getTitle());
         existingContent.setUrl(newContent.getUrl());
@@ -68,9 +90,12 @@ public class ContentService {
     }
 
     @Transactional
-    public void deleteContentById(Long id, String userId) {
-        long numberOfEntriesDeleted = contentRepository.deleteByIdAndUserId(id, userId);
-        if (numberOfEntriesDeleted == 0)
-            throw new NoSuchElementException();
+    public long deleteContentById(Long id, String userId) {
+        try {
+            storageService.deleteByContentId(id);
+        } catch (NoSuchElementException ignored) {
+        }
+
+        return contentRepository.deleteByIdAndUserId(id, userId);
     }
 }
