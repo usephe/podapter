@@ -11,9 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -97,5 +95,10 @@ public class ContentService {
         }
 
         return contentRepository.deleteByIdAndUserId(id, userId);
+    }
+
+    @Transactional
+    public Set<String> getAllTags(String userId) {
+        return new HashSet<>(contentRepository.findDistinctTagsByUserId(userId));
     }
 }
