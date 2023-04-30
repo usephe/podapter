@@ -9,6 +9,6 @@ import java.util.List;
 
 @FeignClient(name = "content-management")
 public interface ContentProxy {
-    @GetMapping("/api/v1/content")
+    @GetMapping("/content")
     List<ContentDTO> getAllContent(@RequestHeader("userId") String userId);
 }
