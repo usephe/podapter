@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -95,6 +96,11 @@ public class ContentController {
 		return contents.stream()
 				.map(contentDTOMapper)
 				.collect(Collectors.toList());
+	}
+
+	@GetMapping("/tags")
+	public Set<String> getAllTags(@RequestHeader String userId) {
+		return contentService.getAllTags(userId);
 	}
 
 	@DeleteMapping("/{id}")

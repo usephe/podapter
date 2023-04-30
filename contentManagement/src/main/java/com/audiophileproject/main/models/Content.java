@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 
 import java.net.URL;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 
 @Getter
@@ -41,7 +41,7 @@ public class Content {
 	private String description;
 	private Date pubDate;
 	@ElementCollection
-	private List<String> tags;
+	private Set<String> tags;
 	@Column(nullable = false)
 	private String userId;
 
