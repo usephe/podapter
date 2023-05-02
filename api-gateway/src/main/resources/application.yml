@@ -62,6 +62,10 @@ spring:
             - Path=/storage/**
           filters:
             - JwtAuthenticationFilter
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/v1/payment/**
 
 eureka:
   client:
