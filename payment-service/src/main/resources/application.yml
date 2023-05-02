@@ -1,0 +1,26 @@
+server:
+  port: 8091
+
+stripe:
+  keys:
+    secret: sk_test_51N0LFTKpaH2wiwbE3wgdmZGRokZcERXtqMfIB9mmGJYXJwFtho8D7Aoqgl95OOQ6jJMMhHCydbjyf4yRCGnfPd2700ZIJnW9dj
+
+spring:
+  application:
+    name: payment-service
+  datasource:
+    url: jdbc:postgresql://localhost:5432/audiophile
+    username: admin
+    password: admin
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB

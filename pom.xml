@@ -21,6 +21,7 @@
     <module>podcastFeedGenerator</module>
     <module>streaming-service</module>
     <module>storageService</module>
+      <module>payment-service</module>
   </modules>
 
   <properties>
