@@ -48,11 +48,11 @@ public class AuthenticationService {
     }
 
     /**
-     * authenticate the user by his email and password
-     * @param reques
+     * authenticate the user by his username and password
+     * @param request
      * @return AuthenticationResponse
      */
-    public AuthenticationResponse authenticate(AuthenticationRequest request){
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),

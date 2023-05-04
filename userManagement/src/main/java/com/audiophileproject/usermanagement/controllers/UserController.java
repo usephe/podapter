@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/user")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
+
     @GetMapping
     public UserResponse getCurrentUser(){
      User currUser = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -24,6 +24,17 @@ public class UserController {
              .lastname(currUser.getLastname())
              .lastname(currUser.getLastname())
              .build();
+    }
+
+    @GetMapping("/{userId}")
+    public UserResponse getUserDetails(@PathVariable String userId) {
+        var user = userService.loadUserByUserId(userId);
+        return UserResponse.builder()
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .firstname(user.getFirstname())
+                .lastname(user.getLastname())
+                .build();
     }
 
     @PutMapping
