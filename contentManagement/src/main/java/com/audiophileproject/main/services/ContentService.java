@@ -1,5 +1,6 @@
 package com.audiophileproject.main.services;
 
+import com.audiophileproject.main.exceptions.NoSpaceLeft;
 import com.audiophileproject.main.exceptions.UnsupportedContentType;
 import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.repositories.ContentRepository;
@@ -43,7 +44,7 @@ public class ContentService {
     }
 
     @Transactional
-    public Content createContent(MultipartFile file, String userId) throws UnsupportedContentType {
+    public Content createContent(MultipartFile file, String userId) throws UnsupportedContentType, NoSpaceLeft {
         var fileMetadata = storageService.save(file, userId);
         var content = Content.builder()
                 .title(fileMetadata.getFileName())

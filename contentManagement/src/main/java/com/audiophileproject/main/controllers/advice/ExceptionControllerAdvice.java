@@ -1,5 +1,6 @@
 package com.audiophileproject.main.controllers.advice;
 
+import com.audiophileproject.main.exceptions.NoSpaceLeft;
 import com.audiophileproject.main.exceptions.UnsupportedContentType;
 import com.audiophileproject.main.models.ErrorDetails;
 import com.audiophileproject.main.models.SubErrorDetails;
@@ -67,6 +68,13 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ErrorDetails> exceptionMultipartHandler(MultipartException ex) {
         return ResponseEntity.badRequest().body(
                 new ErrorDetails(HttpStatus.BAD_REQUEST, ex.getMessage(), ex)
+        );
+    }
+
+    @ExceptionHandler(NoSpaceLeft.class)
+    public ResponseEntity<ErrorDetails> exceptionNoSpaceLeftHandler(NoSpaceLeft ex) {
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(
+                new ErrorDetails(HttpStatus.PAYLOAD_TOO_LARGE, ex.getMessage(), ex)
         );
     }
 }

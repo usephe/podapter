@@ -2,6 +2,7 @@ package com.audiophileproject.main.controllers;
 
 import com.audiophileproject.main.dto.ContentDTO;
 import com.audiophileproject.main.dto.ContentDTOMapper;
+import com.audiophileproject.main.exceptions.NoSpaceLeft;
 import com.audiophileproject.main.exceptions.UnsupportedContentType;
 import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.services.ContentService;
@@ -52,7 +53,7 @@ public class ContentController {
 	public ContentDTO store(
 			@RequestParam("file") MultipartFile file,
 			@RequestHeader String userId
-	) throws UnsupportedContentType {
+	) throws UnsupportedContentType, NoSpaceLeft {
 
 		var storedContent = contentService.createContent(file, userId);
 		logger.info("Creating a content: " + storedContent);

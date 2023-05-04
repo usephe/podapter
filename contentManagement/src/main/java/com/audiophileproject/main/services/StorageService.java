@@ -1,11 +1,11 @@
 package com.audiophileproject.main.services;
 
-import com.audiophileproject.main.dto.FileDTO;
+import com.audiophileproject.main.exceptions.NoSpaceLeft;
 import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.models.FileMetadata;
 import com.audiophileproject.main.proxies.StorageProxy;
+import com.audiophileproject.main.proxies.UserProxy;
 import com.audiophileproject.main.repositories.FileMetadataRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,9 +14,13 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class StorageService {
     private final StorageProxy storageProxy;
+    private final UserProxy userProxy;
     private final FileMetadataRepository fileMetadataRepository;
 
-    public FileMetadata save(MultipartFile file, String userId) {
+    public FileMetadata save(MultipartFile file, String userId) throws NoSpaceLeft {
+        if (!willUserExceedSpaceLimit(userId, file.getSize()))
+            throw new NoSpaceLeft("User will exceed the space limit");
+
         var fileDTO = storageProxy.store(file, userId);
         var fileMetadata = FileMetadata.builder()
                 .storageId(fileDTO.id())
@@ -55,5 +59,19 @@ public class StorageService {
     public void delete(FileMetadata fileMetadata) {
         storageProxy.deleteById(fileMetadata.getStorageId(), fileMetadata.getContent().getUserId());
         fileMetadataRepository.delete(fileMetadata);
+    }
+
+    public long getLeftSpace(String userId) {
+        long userSpaceLimit = userProxy.getUserSpaceLimit(userId);
+        long userUsedSpace = storageProxy.getTotalSpaceUsage(userId).usedSpace();
+        return userSpaceLimit - userUsedSpace;
+    }
+
+    public boolean isUserExceededSpaceLimit(String userId) {
+        return getLeftSpace(userId) <= 0;
+    }
+
+    public boolean willUserExceedSpaceLimit(String userId, long size) {
+        return getLeftSpace(userId) >= size;
     }
 }
