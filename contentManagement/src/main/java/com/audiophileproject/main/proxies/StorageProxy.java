@@ -1,6 +1,7 @@
 package com.audiophileproject.main.proxies;
 
 import com.audiophileproject.main.dto.FileDTO;
+import com.audiophileproject.main.dto.SpaceUsageDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,4 +24,7 @@ public interface StorageProxy {
             @PathVariable("id") Long id,
             @RequestHeader("userId") String userId
     );
+
+    @GetMapping("/storage/usage/{userId}")
+    SpaceUsageDTO getTotalSpaceUsage(@PathVariable("userId") String userId);
 }
