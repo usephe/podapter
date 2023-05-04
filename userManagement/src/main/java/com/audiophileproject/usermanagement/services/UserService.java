@@ -15,7 +15,6 @@ import java.util.Optional;
 
 @Service
 public class UserService implements UserDetailsService {
-
     private  final UserRepository userRepository;
 
     @Autowired
@@ -56,5 +55,9 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return  userRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("User Not Found !"));
+    }
+
+    public User loadUserByUserId(String userId) {
+        return userRepository.findByUsername(userId).orElseThrow();
     }
 }
