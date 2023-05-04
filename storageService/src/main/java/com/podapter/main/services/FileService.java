@@ -86,4 +86,14 @@ public class FileService {
             throw new NoSuchElementException(ex.getMessage());
         }
     }
+
+    public long getTotalSpaceUsage(String userId) {
+        List<FileMetadata> fileMetadataList = fileMetadataRepository.findAllByUserId(userId);
+        long totalSize = 0;
+        for (var fileMetadata: fileMetadataList) {
+           totalSize += fileMetadata.getFileSize();
+        }
+
+        return totalSize;
+    }
 }
