@@ -1,26 +1,27 @@
-package com.audiophileproject.models;
+package com.audiophileproject.services;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 
-public class YoutubeDL {
+@Service
+public class YoutubeDLService {
     @Value("${config.youtubedl.path}")
     private String path = "yt-dlp";
     private boolean isInstalled = false;
 
-    public YoutubeDL() throws Exception{
+    public YoutubeDLService() throws Exception{
         ProcessBuilder pb = new ProcessBuilder(this.path,"--version");
         Process process = pb.start();
         process.waitFor();
         if(process.exitValue() == 0) isInstalled = true;
         else throw new Exception("Youtubedl not found");
     }
-    public YoutubeDL(String path) throws Exception{
+    public YoutubeDLService(String path) throws Exception{
         this.path = path;
         ProcessBuilder pb = new ProcessBuilder(path,"--version");
         Process process = pb.start();

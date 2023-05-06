@@ -1,23 +1,18 @@
 package com.audiophileproject.services;
 
-import com.audiophileproject.models.YoutubeDL;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.view.RedirectView;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 
+@RequiredArgsConstructor
 @Service
 public class ScrapingService {
+    private final YoutubeDLService youtubeDLService;
 
     public String scrapUrl(URL url){
-
-
         // this will ensure that the URL is a full reference to a file
         if(url.getProtocol().isBlank() || url.getHost().isBlank() || url.getFile().isBlank())
         {
@@ -45,8 +40,7 @@ public class ScrapingService {
 //        }
 
         try{
-            YoutubeDL ytdlp = new YoutubeDL();
-            targetUrlString = ytdlp.getTargetURL(url);
+            targetUrlString = youtubeDLService.getTargetURL(url);
         }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
@@ -95,8 +89,7 @@ public class ScrapingService {
 //        }
 
         try{
-            YoutubeDL ytdlp = new YoutubeDL();
-            targetUrlString = ytdlp.getTargetURL(url);
+            targetUrlString = youtubeDLService.getTargetURL(url);
         }catch (Exception e){
             e.printStackTrace();
             throw new RuntimeException(e.getMessage());
