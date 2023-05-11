@@ -20,3 +20,7 @@ spring:
     multipart:
       max-file-size: 100MB
       max-request-size: 100MB
+
+config:
+  streaming:
+    urlPrefix: http://localhost:8080/api/v1/stream?url=

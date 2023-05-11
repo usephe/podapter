@@ -5,46 +5,45 @@ import com.audiophileproject.main.exceptions.UnsupportedContentType;
 import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.repositories.ContentRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.MalformedURLException;
 import java.util.*;
 
+@RequiredArgsConstructor
 @Service
-@AllArgsConstructor
 public class ContentService {
     private final ContentRepository contentRepository;
     private final StorageService storageService;
+    private final ExtractorService extractorService;
 
     public Content createContent(Content content, String userId) throws UnsupportedContentType {
         content.setUserId(userId);
-        if (content.getPubDate() == null)
-            content.setPubDate(new Date());
-        URL url = content.getUrl();
-
-        URLConnection connection;
-        try {
-            connection = url.openConnection();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        if (content.getContentType() == null) {
-            String contentType = connection.getContentType();
-            content.setContentType(contentType);
-        }
-        if (content.getLength() == null) {
-            content.setLength(0L);
-        }
+        updateContent(content);
         return contentRepository.save(content);
     }
 
+    private void updateContent(Content content) throws UnsupportedContentType {
+        if (content.getPubDate() == null)
+            content.setPubDate(new Date());
+        if (content.getLength() == null)
+            content.setLength(0L);
+
+        if (!extractorService.isSupportedSite(content.getUrl()) && content.getContentType() == null) {
+            try {
+                String contentType = content.getUrl().openConnection().getContentType();
+                content.setContentType(contentType);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
     @Transactional
-    public Content createContent(MultipartFile file, String userId) throws UnsupportedContentType, NoSpaceLeft {
+    public Content createContent(MultipartFile file, String userId) throws UnsupportedContentType, NoSpaceLeft, MalformedURLException {
         var fileMetadata = storageService.save(file, userId);
         var content = Content.builder()
                 .title(fileMetadata.getFileName())
