@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.net.MalformedURLException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -32,7 +33,7 @@ public class ContentController {
 	public ContentDTO createContent(
 			@Valid @RequestBody ContentDTO contentDTO,
 			@RequestHeader String userId
-	) throws UnsupportedContentType {
+	) throws UnsupportedContentType, MalformedURLException {
 		var content = Content.builder()
 				.title(contentDTO.title())
 				.url(contentDTO.url())
@@ -53,7 +54,7 @@ public class ContentController {
 	public ContentDTO store(
 			@RequestParam("file") MultipartFile file,
 			@RequestHeader String userId
-	) throws UnsupportedContentType, NoSpaceLeft {
+	) throws UnsupportedContentType, NoSpaceLeft, MalformedURLException {
 
 		var storedContent = contentService.createContent(file, userId);
 		logger.info("Creating a content: " + storedContent);
