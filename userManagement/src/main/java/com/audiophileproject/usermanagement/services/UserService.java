@@ -1,5 +1,6 @@
 package com.audiophileproject.usermanagement.services;
 
+import com.audiophileproject.usermanagement.dto.UserUpdateDTO;
 import com.audiophileproject.usermanagement.models.User;
 import com.audiophileproject.usermanagement.repos.UserRepository;
 import jakarta.transaction.Transactional;
@@ -32,15 +33,14 @@ public class UserService implements UserDetailsService {
      * @return
      */
     @Transactional
-    public User updateUser(User user) {
+    public User updateUser(UserUpdateDTO user) {
         User currUser = (User)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             userRepository
                     .findById(currUser.getId()) // returns Optional<User>
                     .ifPresent(oldUser -> {
-                        oldUser.setFirstname(user.getFirstname());
-                        oldUser.setLastname(user.getLastname());
                         oldUser.setUsername(user.getUsername());
                         oldUser.setEmail(user.getEmail());
+                        oldUser.setPassword(user.getPassword());
                         userRepository.save(oldUser);
                     });
 

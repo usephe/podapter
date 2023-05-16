@@ -77,6 +77,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     @ExceptionHandler(Exception.class)
     protected ResponseEntity<Object> handleInternalErrorException(Exception e, WebRequest request){
+        e.printStackTrace();
         return new ResponseEntity<>(
                 "Something went wrong",
                 new HttpHeaders(),
