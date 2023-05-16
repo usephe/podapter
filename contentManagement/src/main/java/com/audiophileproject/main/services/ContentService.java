@@ -22,11 +22,11 @@ public class ContentService {
 
     public Content createContent(Content content, String userId) throws UnsupportedContentType {
         content.setUserId(userId);
-        updateContent(content);
+        updateContentMetadata(content);
         return contentRepository.save(content);
     }
 
-    private void updateContent(Content content) throws UnsupportedContentType {
+    private void updateContentMetadata(Content content) throws UnsupportedContentType {
         if (content.getPubDate() == null)
             content.setPubDate(new Date());
         if (content.getLength() == null)
@@ -39,6 +39,8 @@ public class ContentService {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        } else if (extractorService.isSupportedSite(content.getUrl())) {
+            content.setContentType("audio/webm");
         }
     }
 
