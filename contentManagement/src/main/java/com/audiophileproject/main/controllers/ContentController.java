@@ -2,9 +2,9 @@ package com.audiophileproject.main.controllers;
 
 import com.audiophileproject.main.dto.ContentDTO;
 import com.audiophileproject.main.dto.ContentDTOMapper;
+import com.audiophileproject.main.dto.ContentMapper;
 import com.audiophileproject.main.exceptions.NoSpaceLeft;
 import com.audiophileproject.main.exceptions.UnsupportedContentType;
-import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.services.ContentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -27,24 +27,15 @@ public class ContentController {
 	private final static Logger logger =
 			Logger.getLogger(ContentController.class.getName());
 	private final ContentDTOMapper contentDTOMapper;
+	private final ContentMapper contentMapper;
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ContentDTO createContent(
 			@Valid @RequestBody ContentDTO contentDTO,
 			@RequestHeader String userId
-	) throws UnsupportedContentType, MalformedURLException {
-		var content = Content.builder()
-				.title(contentDTO.title())
-				.url(contentDTO.url())
-				.contentType(contentDTO.contentType())
-				.length(contentDTO.length())
-				.pubDate(contentDTO.pubDate())
-				.description(contentDTO.description())
-				.tags(contentDTO.tags())
-				.build();
-
-		var c = contentService.createContent(content, userId);
+	) throws UnsupportedContentType {
+		var c = contentService.createContent(contentMapper.apply(contentDTO), userId);
 		logger.info("Creating a content: " + c);
 		return contentDTOMapper.apply(c);
 	}
@@ -67,17 +58,7 @@ public class ContentController {
 			@Valid @RequestBody ContentDTO contentDTO,
 			@RequestHeader String userId
 	) throws UnsupportedContentType {
-
-		var content = new Content();
-		content.setTitle(contentDTO.title());
-		content.setUrl(contentDTO.url());
-		content.setContentType(contentDTO.contentType());
-		content.setLength(contentDTO.length());
-		content.setPubDate(contentDTO.pubDate());
-		content.setDescription(contentDTO.description());
-		content.setTags(contentDTO.tags());
-
-		var c = contentService.updateContent(id, content, userId);
+		var c = contentService.updateContent(id, contentMapper.apply(contentDTO), userId);
 		logger.info("Updating content {id=" + id + "}: " + c);
 		return contentDTOMapper.apply(c);
 	}
