@@ -1,5 +1,6 @@
 package com.audiophileproject.main.services;
 
+import com.audiophileproject.main.dto.UserDTO;
 import com.audiophileproject.main.exceptions.NoSpaceLeft;
 import com.audiophileproject.main.models.Content;
 import com.audiophileproject.main.models.FileMetadata;
@@ -62,7 +63,7 @@ public class StorageService {
     }
 
     public long getLeftSpace(String userId) {
-        long userSpaceLimit = userProxy.getUserSpaceLimit(userId);
+        long userSpaceLimit = userProxy.getUserSpaceLimit(userId).limit();
         long userUsedSpace = storageProxy.getTotalSpaceUsage(userId).usedSpace();
         return userSpaceLimit - userUsedSpace;
     }
