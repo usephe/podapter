@@ -1,11 +1,12 @@
 package com.audiophileproject.main.proxies;
 
-import org.springframework.stereotype.Service;
+import com.audiophileproject.main.dto.UserDTO;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-// TODO: use the actual service to get the space limit
-@Service
-public class UserProxy {
-    public long getUserSpaceLimit(String userId) {
-        return 10000000L;
-    }
+@FeignClient(name = "payment-service")
+public interface UserProxy {
+    @GetMapping("/api/v1/payment/limit")
+    UserDTO getUserSpaceLimit(@RequestParam("userId") String userId);
 }

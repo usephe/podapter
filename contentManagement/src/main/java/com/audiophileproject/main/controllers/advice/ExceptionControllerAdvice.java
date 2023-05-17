@@ -4,6 +4,7 @@ import com.audiophileproject.main.exceptions.NoSpaceLeft;
 import com.audiophileproject.main.exceptions.UnsupportedContentType;
 import com.audiophileproject.main.models.ErrorDetails;
 import com.audiophileproject.main.models.SubErrorDetails;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -75,6 +76,13 @@ public class ExceptionControllerAdvice {
     public ResponseEntity<ErrorDetails> exceptionNoSpaceLeftHandler(NoSpaceLeft ex) {
         return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(
                 new ErrorDetails(HttpStatus.PAYLOAD_TOO_LARGE, ex.getMessage(), ex)
+        );
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<ErrorDetails> exceptionFeignHandler(FeignException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
+                new ErrorDetails(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex)
         );
     }
 }
