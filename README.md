@@ -1,4 +1,4 @@
-# Podapter: Scalable and Automated Podcast Generation
+# Podapter: Scalable and Automated Podcast Generation and Hosting System
 
 This project is an open source audio management and podcast generation and hosting solution. Unlike other podcast hosting platforms, our application will make gathering and organizing audio content from different sources from the web and redelivering them through podcasts, as easy as a click of a button. Massive amount of audio content is being hosted on the web unorganized, and the goal of our application is to gather it, organize it, and redeliver it in a more convenient way through podcasts.
 
